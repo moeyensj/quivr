@@ -94,8 +94,8 @@ class Table:
         raise TypeError(f"Unsupported type: {type(data)}")
 
     @classmethod
-    def as_field(cls, nullable: bool = True, metadata: Optional[MetadataDict] = None) -> SubTableField[Self]:
-        return SubTableField(cls, nullable=nullable, metadata=metadata)
+    def as_field(cls, name: Optional[str] = None, nullable: bool = True, metadata: Optional[MetadataDict] = None) -> SubTableField[Self]:
+        return SubTableField(cls, name=name, nullable=nullable, metadata=metadata)
 
     @classmethod
     def from_kwargs(cls, **kwargs) -> Self:

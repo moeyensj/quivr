@@ -14,10 +14,11 @@ class Field:
     A Field is an accessor for data in a Table, and also a descriptor for the Table's structure.
     """
 
-    def __init__(self, dtype: pa.DataType, nullable: bool = True, metadata: Optional[MetadataDict] = None):
+    def __init__(self, dtype: pa.DataType, name: Optional[str] = None, nullable: bool = True, metadata: Optional[MetadataDict] = None):
         self.dtype = dtype
         self.nullable = nullable
         self.metadata = metadata
+        self.name = name
 
     def __get__(self, obj: "Table", objtype: type):
         return obj.table.column(self.name)
@@ -27,7 +28,8 @@ class Field:
         obj.table = obj.table.set_column(idx, self.pyarrow_field(), [value])
 
     def __set_name__(self, owner: type, name: str):
-        self.name = name
+        if self.name is None:
+            self.name = name
 
     def pyarrow_field(self):
         return pa.field(self.name, self.dtype, self.nullable, self.metadata)
@@ -41,11 +43,11 @@ class SubTableField(Field, Generic[T]):
     A field which represents an embedded Quivr table.
     """
 
-    def __init__(self, table_type: type[T], nullable: bool = True, metadata: Optional[MetadataDict] = None):
+    def __init__(self, table_type: type[T], name: Optional[str] = None, nullable: bool = True, metadata: Optional[MetadataDict] = None):
         self.table_type = table_type
         self.schema = table_type.schema
         dtype = pa.struct(table_type.schema)
-        super().__init__(dtype, nullable=nullable, metadata=metadata)
+        super().__init__(dtype, name=name, nullable=nullable, metadata=metadata)
 
     def __get__(self, obj: "Table", objtype: type) -> T:
         array = obj.table.column(self.name)
