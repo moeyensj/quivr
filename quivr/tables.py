@@ -45,8 +45,7 @@ class ArrowArrayProvider(Protocol):
     A Protocol which describes objects that support the Arrow custom array extension protocol.
     """
 
-    def __arrow_array__(self, type: Optional[pa.DataType] = None) -> pa.Array:
-        ...
+    def __arrow_array__(self, type: Optional[pa.DataType] = None) -> pa.Array: ...
 
 
 AttributeValueType: TypeAlias = Union[int, float, str]
@@ -64,6 +63,7 @@ _FORBIDDEN_COLUMN_NAMES = {
     "_quivr_subtables",
     "_quivr_attributes",
     "_column_validators",
+    "_quivr_subtable_cache",
 }
 
 
